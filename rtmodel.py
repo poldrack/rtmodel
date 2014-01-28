@@ -54,14 +54,14 @@ variable_sf[100:102]=1
 variable_sf[300:303]=1
 variable_sf[500:505]=1
 variable_sf[700:706]=1
-variable_sf_conv=numpy.convolve(variable_sf,spm_hrf(tr))[0:len(sf)]
+variable_sf_conv=numpy.convolve(variable_sf,spm_hrf(tr))[0:len(variable_sf)]
 
 constant_sf=numpy.zeros(1000)
 constant_sf[100:104]=1
 constant_sf[300:304]=1
 constant_sf[500:504]=1
 constant_sf[700:704]=1
-constant_sf_conv=numpy.convolve(constant_sf,spm_hrf(tr))[0:len(sf)]
+constant_sf_conv=numpy.convolve(constant_sf,spm_hrf(tr))[0:len(variable_sf)]
 
 hrf_bases=numpy.zeros((1000,4))
 hrf_bases[100:104,0]=1
@@ -71,7 +71,7 @@ hrf_bases[700:704,3]=1
 desmtx=numpy.zeros((1000,4))
 
 for x in range(4):
-    desmtx[:,x]=numpy.convolve(hrf_bases[:,x],spm_hrf(tr))[0:len(sf)]
+    desmtx[:,x]=numpy.convolve(hrf_bases[:,x],spm_hrf(tr))[0:len(variable_sf)]
 
 b_est=numpy.linalg.inv(desmtx.T.dot(desmtx)).dot(desmtx.T).dot(variable_sf_conv)
 
@@ -80,15 +80,16 @@ intensity_sf[100:104]=b_est[0]
 intensity_sf[300:304]=b_est[1]
 intensity_sf[500:504]=b_est[2]
 intensity_sf[700:704]=b_est[3]
-intensity_sf_conv=numpy.convolve(intensity_sf,spm_hrf(tr))[0:len(sf)]
+intensity_sf_conv=numpy.convolve(intensity_sf,spm_hrf(tr))[0:len(variable_sf)]
 
 intensity_sf_conv=desmtx.dot(b_est)
 
-plt.plot(variable_sf_conv,color='b')
-plt.plot(intensity_sf_conv,'r--')
+plt.clf()
+plt.plot(variable_sf_conv,color='k',linewidth=4)
 plt.hold(True)
+plt.plot(intensity_sf_conv,'c--')
 #plt.plot(constant_sf_conv,color='b')
-plt.plot(intensity_sf_conv - variable_sf_conv,color='g')
+plt.plot(intensity_sf_conv - variable_sf_conv,color='b')
 plt.text(10,-0.02,'RT')
 plt.text(100,-0.02,'200 ms')
 plt.text(300,-0.02,'300 ms')
