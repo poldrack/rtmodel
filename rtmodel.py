@@ -3,7 +3,6 @@ make figure showing RT modeling
 """
 
 import numpy
-import spm_hrf
 import matplotlib.pyplot as plt
 import statsmodels.nonparametric.smoothers_lowess
 import scipy
