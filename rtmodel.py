@@ -4,7 +4,7 @@ make figure showing RT modeling
 
 import numpy
 import matplotlib.pyplot as plt
-import scipy
+import scipy.stats
 
 def spm_hrf(TR,p=[6,16,1,1,6,0,32]):
     """ An implementation of spm_hrf.m from the SPM distribution
@@ -36,8 +36,8 @@ p: list with parameters of the two gamma functions:
     dt  = TR/fMRI_T
     u   = numpy.arange(p[6]/dt + 1) - p[5]/dt
     hrf=scipy.stats.gamma.pdf(u,p[0]/p[2],scale=1.0/(dt/p[2])) - scipy.stats.gamma.pdf(u,p[1]/p[3],scale=1.0/(dt/p[3]))/p[4]
-    good_pts=numpy.array(range(numpy.int(p[6]/TR)))*fMRI_T
-    hrf=hrf[list(good_pts)]
+    good_pts=(numpy.arange(int(p[6]/TR)) * fMRI_T).astype(int)
+    hrf=hrf[good_pts]
     # hrf = hrf([0:(p(7)/RT)]*fMRI_T + 1);
     hrf = hrf/numpy.sum(hrf);
     return hrf
@@ -84,7 +84,6 @@ intensity_sf_conv=desmtx.dot(b_est)
 
 plt.clf()
 plt.plot(variable_sf_conv,color='k',linewidth=4)
-plt.hold(True)
 plt.plot(intensity_sf_conv,'c--')
 #plt.plot(constant_sf_conv,color='b')
 plt.plot(intensity_sf_conv - variable_sf_conv,color='b')
