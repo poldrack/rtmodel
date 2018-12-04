@@ -4,7 +4,6 @@ make figure showing RT modeling
 
 import numpy
 import matplotlib.pyplot as plt
-import statsmodels.nonparametric.smoothers_lowess
 import scipy
 
 def spm_hrf(TR,p=[6,16,1,1,6,0,32]):
